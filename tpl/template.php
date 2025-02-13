@@ -21,14 +21,25 @@
         </div>
       </div>
       <div class="menu">
-        <div class="title">Navigation</div>
-        <ul>
-          <li> <i class="fa fa-home"></i>Home</li>
-          <li><i class="fa fa-signal"></i>Activity</li>
-          <li class="active"> <i class="fa fa-tasks"></i>Manage Tasks</li>
-          <li> <i class="fa fa-envelope"></i>Messages</li>
+        <div class="title">Folders</div> 
+        <ul class="folderList">
+          <?php
+foreach ($folders as $folder):?>
+    <li> 
+      <a href="?folder_id=<?= $folder->id?>"> <i class="fa fa-folder"></i><?= $folder->name?></a>
+      <a class="remove-folder" href="?delete_folder=<?= $folder->id?>"> <i class="fa fa-trash-o"></i></a>
+  </li>
+   <?php endforeach; ?>
+         
+          <li class="active"> <i class="fa fa-folder"></i>CurrentFolder</li>
+       
+     
         </ul>
       </div>
+      <div>
+          <input type="text" placeholder="Add new folder" id="addFolderInput"/>
+          <button id="addFolderBtn">+</button>
+        </div>
     </div>
     <div class="view">
       <div class="viewHeader">
@@ -71,7 +82,31 @@
   </div>
 </div>
 <!-- partial -->
-  <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script><script  src="assets/js/script.js"></script>
+  <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script><script  src="
+  assets/js/script.js"></script>
+<script>
+$j = jQuery.noConflict();
+$j().ready(function(){
+$j('#addFolderBtn').click(function(e){
+  e.preventDefault();
+  var input = $j('#addFolderInput').val();
+ $j.ajax({
+  url : "process/ajaxHandler.php",
+  method : "POST",
+  data : {
+action : "add_folder",folderName:input},
+  success : function(response){
+if( response == true){ 
+  alert("Folder added successfully");
+  }else{
+    alert(response);
+  }
+  } 
+ })
+})  
+})
 
+</script>
 </body>
 </html>
+
