@@ -49,3 +49,19 @@ function deleteTask($task_id) {
     
 }
 
+function addTaskInput($task_name,$folder_id) {
+    global $pdo;
+    $currentUserId = getCurrentUserId();
+    $stmt = $pdo->prepare("INSERT INTO tasks (title, folder_id, user_id) VALUES (:task_name, :folder_id, :user_id)");
+    $stmt->execute( ['task_name'=>$task_name,'folder_id'=>$folder_id,'user_id'=>$currentUserId]);
+
+  return true;    
+    
+}
+function doneSwitch($task_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("UPDATE tasks SET is_done = NOT is_done WHERE id = ? AND user_id = ?");    
+    $stmt->execute([$task_id , getCurrentUserId()]);   
+    return true;
+    
+}

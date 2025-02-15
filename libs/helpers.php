@@ -1,4 +1,7 @@
 <?php
+function site_url($uri = ''){
+    return  BASE_URL . $uri;
+}
 function diePage($msg){
     echo $msg;
     die();

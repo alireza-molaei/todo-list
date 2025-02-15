@@ -23,7 +23,9 @@
       <div class="menu">
         <div class="title">Folders</div> 
         <ul class="folderList">
-        <li class="<?=isset($_GET['folder_id'] ) ? '':'active' ?>"> <i class="fa fa-folder"></i>All</li>
+        <li class="<?=isset($_GET['folder_id'] ) ? '':'active' ?>">
+          <a href="<?= site_url()?>">     <i class="fa fa-folder"></i>All</li></a>
+   
        
           <?php
 foreach ($folders as $folder):?>
@@ -52,7 +54,7 @@ foreach ($folders as $folder):?>
         <div class="functions">
           <div class="button active">Add New Task</div>
           <div class="button">Completed</div>
-          <div class="button inverz"><i class="fa fa-trash-o"></i></div>
+      
         </div>
       </div>
       <div class="content">
@@ -63,7 +65,7 @@ foreach ($folders as $folder):?>
           <?php
 foreach ($tasks as $task):?>
       <li class=" <?= $task->is_done ? 'checked': '';?>">
-        <i class="fa <?= $task->is_done ? 'fa-check-square-o': 'fa fa-square-o';?> "></i>
+        <i data-taskId="<?= $task->id?>" class="isDone fa <?= $task->is_done ? 'fa-check-square-o': 'fa fa-square-o';?> "></i>
       <span><?=$task->title?></span>
               <div class="info">
               <span class="create_at">created At <?=$task->created_at?></span>
@@ -80,15 +82,9 @@ foreach ($tasks as $task):?>
          
     
           </ul>
+          
         </div>
-        <div class="list">
-          <div class="title">Tomorrow</div>
-          <ul>
-            <li><i class="fa fa-square-o"></i><span>Find front end developer</span>
-              <div class="info"></div>
-            </li>
-          </ul>
-        </div>
+        
       </div>
     </div>
   </div>
@@ -99,6 +95,24 @@ foreach ($tasks as $task):?>
 <script>
 $j = jQuery.noConflict();
 $j().ready(function(){
+  $j('.isDone').click(function(e){
+  let taskId = $j(this).data('taskid');
+  $j.ajax({
+    url : "process/ajaxHandler.php",
+    method : "POST",
+    data : {
+      action : "toggleTask",taskId:taskId
+    },
+    success : function(response){
+      if( response == true){ 
+        location.reload();
+      }else{
+        alert(response);
+      };
+    }
+  });
+
+});
 $j('#addFolderBtn').click(function(e){
   e.preventDefault();
   var input = $j('#addFolderInput').val();
@@ -117,10 +131,27 @@ if( response == true){
  });
 });
 
-
-
-
 });
+$j(window).keypress(function(e){
+  if(e.key == "Enter"){
+    let input = $j('#addTaskInput').val();
+    $j.ajax({
+      url : "process/ajaxHandler.php",
+      method : "POST",
+      data : {
+        action : "addTask",folderId:<?=$_GET['folder_id'] ?? 0?> ,taskTitle:$j('#taskNameInput').val()
+      },
+      success : function(response){
+        if( response == true){ 
+          location.reload();
+        }else{
+          alert(response);
+        };
+      }
+    });
+  }
+});
+
 
 </script>
 </body>
